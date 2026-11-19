@@ -1,0 +1,126 @@
+/* VoltSplit landing: light editorial. Scoped under .lp so the app's tokens are untouched. */
+
+.lp {
+  --paper: #f3f2ee;
+  --paper-2: #e9e7e1;
+  --ink: #15140f;
+  --ink-soft: #57544b;
+  --rule: #cfccc3;
+  --night: #121210;
+  --night-ink: #f1efe9;
+  --night-soft: #a9a59a;
+  --bat: #2a78d6;
+  --sc: #d9541f;
+  --bat-night: #4a95ee;
+  --sc-night: #f0703a;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --gutter: clamp(20px, 4vw, 64px);
+  --measure: 62ch;
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  color-scheme: light;
+  overflow-x: clip;
+}
+.lp ::selection { background: rgb(42 120 214 / 0.22); }
+.lp a { color: inherit; }
+.lp :focus-visible { outline: 2px solid var(--bat); outline-offset: 3px; border-radius: 2px; }
+
+.lp-serif { font-family: var(--font-serif), Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
+.lp-num { font-family: var(--font-geist-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.lp-measure { max-width: var(--measure); }
+.lp h1, .lp h2, .lp h3 { text-wrap: balance; }
+.lp p { text-wrap: pretty; }
+
+/* Grain: a lit page, not a flat fill */
+.lp-grain::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* ---------------------------------------------------------------- reveal on enter */
+.lp [data-in] { transition: opacity 900ms var(--ease), transform 900ms var(--ease), clip-path 1200ms var(--ease); }
+.lp [data-in="rise"] { opacity: 0; transform: translateY(28px); }
+.lp [data-in="wipe"] { clip-path: inset(100% 0 0 0); }
+.lp [data-in="wipe-side"] { clip-path: inset(0 100% 0 0); }
+.lp [data-in].is-in { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
+.lp [data-delay="1"] { transition-delay: 120ms; }
+.lp [data-delay="2"] { transition-delay: 240ms; }
+.lp [data-delay="3"] { transition-delay: 360ms; }
+
+/* Kinetic cover headline: lines rise in on load */
+.lp-line { display: block; overflow: clip; padding-bottom: 0.06em; }
+.lp-line > span { display: block; transform: translateY(105%); animation: lp-rise 1100ms var(--ease) forwards; }
+.lp-line:nth-child(2) > span { animation-delay: 110ms; }
+.lp-line:nth-child(3) > span { animation-delay: 220ms; }
+@keyframes lp-rise { to { transform: none; } }
+.lp-cover-plate { clip-path: inset(100% 0 0 0); animation: lp-wipe 1500ms var(--ease) 350ms forwards; }
+@keyframes lp-wipe { to { clip-path: inset(0 0 0 0); } }
+.lp-fade { opacity: 0; animation: lp-fade 900ms var(--ease) 700ms forwards; }
+@keyframes lp-fade { to { opacity: 1; } }
+
+/* Image plates: the photo lives inside its frame and drifts (parallax) */
+.lp-plate { position: relative; overflow: hidden; background: var(--paper-2); }
+.lp-plate img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
+
+/* Hairline rules and folio */
+.lp-rule { border-top: 1px solid var(--rule); }
+.lp-folio {
+  position: fixed; inset: 0 0 auto 0; z-index: 50; display: flex; align-items: center; gap: 16px;
+  padding: 14px var(--gutter); font-size: 12px; letter-spacing: 0.02em; color: var(--ink-soft);
+  background: color-mix(in oklab, var(--paper) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
+  border-bottom: 1px solid color-mix(in oklab, var(--rule) 60%, transparent);
+  transition: color 400ms var(--ease), background-color 400ms var(--ease), border-color 400ms var(--ease);
+  pointer-events: none;
+}
+.lp-folio[data-ground="night"] {
+  background: color-mix(in oklab, var(--night) 82%, transparent);
+  border-bottom-color: rgb(255 255 255 / 0.06);
+}
+.lp-folio a, .lp-folio button { pointer-events: auto; }
+.lp-folio[data-ground="night"] { color: var(--night-soft); }
+.lp-stage-pad { padding-top: 64px; padding-bottom: 16px; }
+.lp-folio[data-ground="night"] .lp-folio-strong { color: var(--night-ink); }
+.lp-folio-strong { color: var(--ink); font-weight: 500; transition: color 400ms var(--ease); }
+.lp-folio-chapter { transition: opacity 300ms var(--ease); }
+
+/* Text links with an underline that draws */
+.lp-link {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size 500ms var(--ease);
+  text-decoration: none; padding-bottom: 1px;
+}
+.lp-link:hover { background-size: 0% 1px; background-position: 100% 100%; }
+
+/* Night chapter (the peak) */
+.lp-night { background: var(--night); color: var(--night-ink); }
+.lp-night ::selection { background: rgb(74 149 238 / 0.35); }
+
+/* Pinned stage */
+.lp-pin { position: relative; }
+.lp-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+
+/* Vehicle rail */
+.lp-rail { display: flex; gap: clamp(16px, 2vw, 32px); will-change: transform; }
+.lp-rail-item { flex: 0 0 auto; width: clamp(260px, 30vw, 460px); }
+@media (max-width: 859px) {
+  .lp-rail-wrap { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .lp-rail-wrap::-webkit-scrollbar { display: none; }
+  .lp-rail { transform: none !important; padding-right: var(--gutter); }
+  .lp-rail-item { width: 78vw; scroll-snap-align: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp [data-in], .lp-line > span, .lp-cover-plate, .lp-fade { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; }
+  .lp-plate img { transform: none !important; }
+}
+
+/* next/image "fill" writes inline inset/size; give parallax images room to travel */
+.lp-plate img[data-parallax] { top: -8% !important; height: 116% !important; }
+
+/* Footer wordmark: fills the measure edge to edge */
+.lp-wordmark { font-size: clamp(64px, 23vw, 420px); letter-spacing: -0.055em; margin-left: -0.04em; }

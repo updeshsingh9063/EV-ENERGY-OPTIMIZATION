@@ -1,0 +1,393 @@
+{
+  "version": "v1.0.0",
+  "generated_at": "2026-11-17T11:03:22.218879+00:00",
+  "runtime_s": 513.7,
+  "data": {
+    "train_cycles": 21,
+    "train_seconds": 21423,
+    "test_cycles": [
+      "us06",
+      "wltc_3b"
+    ],
+    "nasa_impedance_tests": 887,
+    "community_cycles": "github.com/PathfinderAV/driving-cycles \u2192 HTTP 404 (unavailable)"
+  },
+  "forecaster": {
+    "algorithm": "XGBoost (GBM), stacked multi-horizon",
+    "horizon_s": 10,
+    "mae_kw": 7.686837487494366,
+    "rmse_kw": 11.959128193488915,
+    "mae_per_horizon_kw": {
+      "1": 4.260069243225767,
+      "2": 5.368787151069537,
+      "3": 6.590590968734695,
+      "4": 7.3664755563276865,
+      "5": 8.031595016331423,
+      "6": 8.473752381101141,
+      "7": 8.87706618459952,
+      "8": 9.141362377143166,
+      "9": 9.28667553894985,
+      "10": 9.51064881427654
+    },
+    "baseline_persistence_mae_kw": 8.735266338728053,
+    "baseline_gp_mae_kw": 8.4123836833907,
+    "gp_95ci_coverage": 0.794,
+    "train_rows": 213075,
+    "test_rows": 23910,
+    "fit_seconds": 3.78,
+    "test_cycles": "US06, WLTC 3b (held out)",
+    "table_export_max_err_kw": 1.5505996401543598e-05
+  },
+  "surrogates": {
+    "loss-bat": {
+      "algorithm": "Gaussian Process (RBF-ARD + white noise)",
+      "r2": 0.9999999912324417,
+      "mae_w": 0.06345946249606445,
+      "ci95_coverage": 0.9973333333333333,
+      "train_points": 700,
+      "test_points": 3000,
+      "inputs": [
+        "P_bat_kW",
+        "SOC",
+        "R_growth (NASA PCoE)"
+      ],
+      "mpc_fit": {
+        "a_b_kw_per_kw2": 0.0009012502699931585
+      }
+    },
+    "loss-sc": {
+      "algorithm": "Gaussian Process (RBF-ARD + white noise)",
+      "r2": 0.9999953282485042,
+      "mae_w": 1.433251492355491,
+      "ci95_coverage": 0.957,
+      "train_points": 700,
+      "test_points": 3000,
+      "inputs": [
+        "P_sc_kW",
+        "V_sc"
+      ],
+      "mpc_fit": {
+        "c_s_kw_per_kw": 0.05131975155152081,
+        "a_s_kw_per_kw2": 0.00038804445987061174
+      }
+    }
+  },
+  "policy": {
+    "algorithm": "Random Forest distilled from forecast-MPC (+1 DAgger round)",
+    "selected_by": "closed-loop validation on synthetic aggressive cycle",
+    "candidates": {
+      "xgboost": {
+        "stress_vs_battery_only_pct": -71.83780294322649,
+        "energy_vs_battery_only_pct": 1.3453506805847892,
+        "violations": 0
+      },
+      "random_forest": {
+        "stress_vs_battery_only_pct": -72.56890696457616,
+        "energy_vs_battery_only_pct": 1.3035192454688538,
+        "violations": 0
+      }
+    },
+    "features": [
+      "p_kw",
+      "p_lag1_kw",
+      "p_lag2_kw",
+      "p_lag3_kw",
+      "p_lag4_kw",
+      "p_lag5_kw",
+      "v_ms",
+      "a_ms2",
+      "v_lag1_ms",
+      "v_lag2_ms",
+      "p_mean10_kw",
+      "p_std10_kw",
+      "soc_sc",
+      "soc_bat",
+      "pbat_prev_kw"
+    ],
+    "imitation_mae_kw": 0.7005086136416954,
+    "n_trees": 60,
+    "n_nodes": 30660,
+    "python_us_per_inference": 15726.6,
+    "table_export_max_err_kw": 7.105427357601002e-15,
+    "sil": {
+      "compiler": "zig cc (clang) -O2, C99",
+      "steps_compared": 2402,
+      "max_abs_diff_kw": 3.7209857619018296e-06,
+      "mean_abs_diff_kw": 1.0949379304177732e-07,
+      "share_within_0p01_kw": 1.0,
+      "fallback_activations": 0,
+      "us_per_inference": 0.86,
+      "object_size_kb_Os": 661.5,
+      "passed": true
+    },
+    "c_source_bytes": {
+      "hess_policy.h": 1225,
+      "hess_policy.c": 1087061
+    },
+    "test_avg": {
+      "rule_based": {
+        "energy_vs_battery_only_pct": 2.6025189217510403,
+        "energy_vs_rule_based_pct": 0.0,
+        "peak_c_vs_battery_only_pct": -30.645472188595207,
+        "stress_vs_battery_only_pct": -48.510781956668964,
+        "rms_vs_battery_only_pct": -24.282684139027523,
+        "violations": 0
+      },
+      "mpc_oracle": {
+        "energy_vs_battery_only_pct": 1.6530211179826892,
+        "energy_vs_rule_based_pct": -0.922149112290388,
+        "peak_c_vs_battery_only_pct": -50.73072644279864,
+        "stress_vs_battery_only_pct": -52.62517492297388,
+        "rms_vs_battery_only_pct": -27.164877126616496,
+        "violations": 0
+      },
+      "mpc_forecast": {
+        "energy_vs_battery_only_pct": 1.5116166476834447,
+        "energy_vs_rule_based_pct": -1.0589928954830907,
+        "peak_c_vs_battery_only_pct": -47.46334123807719,
+        "stress_vs_battery_only_pct": -51.12763607867642,
+        "rms_vs_battery_only_pct": -26.161555087109157,
+        "violations": 0
+      },
+      "distilled_ml": {
+        "energy_vs_battery_only_pct": 1.3986833419037392,
+        "energy_vs_rule_based_pct": -1.1681870390176152,
+        "peak_c_vs_battery_only_pct": -35.605871218588405,
+        "stress_vs_battery_only_pct": -49.25154861079082,
+        "rms_vs_battery_only_pct": -25.13902525141097,
+        "violations": 0
+      }
+    },
+    "mpc": {
+      "a_b": 0.0009012502699931585,
+      "a_s": 0.00038804445987061174,
+      "w_s": 0.004,
+      "c_s": 0.05131975155152081,
+      "delta": 0.5,
+      "w_d": 0.002,
+      "w_T": 0.0002,
+      "rho": 0.05,
+      "soc_ref": 0.7,
+      "soc_lo": 0.1,
+      "soc_hi": 0.95,
+      "e_use_kj": 1174.2432000000001,
+      "u_abs_max": 77.6,
+      "b_abs_max": 122.29920000000001,
+      "weight_sweep": [
+        {
+          "w_s": 0.0,
+          "energy_vs_battery_only": -0.0009554759691194533,
+          "energy_vs_rule_based": -0.02007643563884391,
+          "stress_vs_battery_only": -0.18093137108692303
+        },
+        {
+          "w_s": 0.00025,
+          "energy_vs_battery_only": -0.0007644156664386633,
+          "energy_vs_rule_based": -0.019888566496038613,
+          "stress_vs_battery_only": -0.21859878328554058
+        },
+        {
+          "w_s": 0.0005,
+          "energy_vs_battery_only": -0.00035994877293310523,
+          "energy_vs_rule_based": -0.019493590536778793,
+          "stress_vs_battery_only": -0.2517852930913931
+        },
+        {
+          "w_s": 0.001,
+          "energy_vs_battery_only": 0.0009176471744199999,
+          "energy_vs_rule_based": -0.018246988589709228,
+          "stress_vs_battery_only": -0.3125620557434626
+        },
+        {
+          "w_s": 0.002,
+          "energy_vs_battery_only": 0.004362037867309487,
+          "energy_vs_rule_based": -0.014884361536430654,
+          "stress_vs_battery_only": -0.4095486836869509
+        },
+        {
+          "w_s": 0.004,
+          "energy_vs_battery_only": 0.011422639890525055,
+          "energy_vs_rule_based": -0.007985427449884138,
+          "stress_vs_battery_only": -0.5253174173611048
+        },
+        {
+          "w_s": 0.008,
+          "energy_vs_battery_only": 0.01911360891415274,
+          "energy_vs_rule_based": -0.0004392407298710044,
+          "stress_vs_battery_only": -0.5979991054049488
+        }
+      ]
+    },
+    "ts_module_bytes": {
+      "policy.ts": 1054381,
+      "forecaster.ts": 259242,
+      "mpc.ts": 508
+    }
+  },
+  "evaluation": {
+    "us06": {
+      "battery_only": {
+        "energyTotalKwh": 2.3820815699084465,
+        "batteryLossKwh": 0.08934707836840255,
+        "scLossKwh": 0.0,
+        "converterLossKwh": 0.0,
+        "peakCRate": 4.5526881877044865,
+        "rmsCurrentA": 66.78263784266647,
+        "ahThroughput": 8.43898669701827,
+        "dodStress": 247.63836852837548,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 0.0,
+        "energy_vs_rule_based_pct": -3.282338473387869,
+        "peak_c_vs_battery_only_pct": 0.0,
+        "stress_vs_battery_only_pct": 0.0,
+        "rms_vs_battery_only_pct": 0.0
+      },
+      "rule_based": {
+        "energyTotalKwh": 2.4629230404345646,
+        "batteryLossKwh": 0.043008609906751503,
+        "scLossKwh": 0.02779400559950136,
+        "converterLossKwh": 0.0993859333882654,
+        "peakCRate": 2.643695127471083,
+        "rmsCurrentA": 46.33413868834641,
+        "ahThroughput": 6.2705711738648855,
+        "dodStress": 100.41536410030807,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 3.3937322528054814,
+        "energy_vs_rule_based_pct": 0.0,
+        "peak_c_vs_battery_only_pct": -41.93111808950698,
+        "stress_vs_battery_only_pct": -59.45080534287156,
+        "rms_vs_battery_only_pct": -30.619484067842272
+      },
+      "mpc_oracle": {
+        "energyTotalKwh": 2.4297844803943516,
+        "batteryLossKwh": 0.0383103567943419,
+        "scLossKwh": 0.01755952629509984,
+        "converterLossKwh": 0.08118010576486691,
+        "peakCRate": 1.5090588912121878,
+        "rmsCurrentA": 43.73020262946123,
+        "ahThroughput": 6.252452746176792,
+        "dodStress": 86.57113533370588,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 2.0025725016519225,
+        "energy_vs_rule_based_pct": -1.345497179415156,
+        "peak_c_vs_battery_only_pct": -66.85345384979964,
+        "stress_vs_battery_only_pct": -65.04130767450675,
+        "rms_vs_battery_only_pct": -34.51860537092677
+      },
+      "mpc_forecast": {
+        "energyTotalKwh": 2.423303453649743,
+        "batteryLossKwh": 0.04014147830354546,
+        "scLossKwh": 0.01568695097705857,
+        "converterLossKwh": 0.07474053282909783,
+        "peakCRate": 1.639541738988047,
+        "rmsCurrentA": 44.7630914695811,
+        "ahThroughput": 6.284046209667371,
+        "dodStress": 91.92218635044591,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 1.7304984120623867,
+        "energy_vs_rule_based_pct": -1.6086408764859783,
+        "peak_c_vs_battery_only_pct": -63.987392252867615,
+        "stress_vs_battery_only_pct": -62.88047490511832,
+        "rms_vs_battery_only_pct": -32.971962600461104
+      },
+      "distilled_ml": {
+        "energyTotalKwh": 2.4178207325064514,
+        "batteryLossKwh": 0.04249189526071807,
+        "scLossKwh": 0.013244494063524782,
+        "converterLossKwh": 0.06934985164216372,
+        "peakCRate": 2.6056500019517204,
+        "rmsCurrentA": 46.05496350662514,
+        "ahThroughput": 6.233342905070504,
+        "dodStress": 100.56282310543429,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 1.5003332820117565,
+        "energy_vs_rule_based_pct": -1.8312512079206145,
+        "peak_c_vs_battery_only_pct": -42.76678097593333,
+        "stress_vs_battery_only_pct": -59.39125923699042,
+        "rms_vs_battery_only_pct": -31.03751963927175
+      }
+    },
+    "wltc_3b": {
+      "battery_only": {
+        "energyTotalKwh": 3.3494169146256727,
+        "batteryLossKwh": 0.06957286164530735,
+        "scLossKwh": 0.0,
+        "converterLossKwh": 0.0,
+        "peakCRate": 2.1528983705104845,
+        "rmsCurrentA": 34.042677018875125,
+        "ahThroughput": 11.555313297068261,
+        "dodStress": 163.82820393157178,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 0.0,
+        "energy_vs_rule_based_pct": -1.7790809971325316,
+        "peak_c_vs_battery_only_pct": 0.0,
+        "stress_vs_battery_only_pct": 0.0,
+        "rms_vs_battery_only_pct": 0.0
+      },
+      "rule_based": {
+        "energyTotalKwh": 3.4100850904560254,
+        "batteryLossKwh": 0.04684255838668062,
+        "scLossKwh": 0.009253582293205484,
+        "converterLossKwh": 0.07414489679577492,
+        "peakCRate": 1.7361009858292875,
+        "rmsCurrentA": 27.93341761901108,
+        "ahThroughput": 9.081121807916862,
+        "dodStress": 102.27670496210966,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 1.8113055906965991,
+        "energy_vs_rule_based_pct": 0.0,
+        "peak_c_vs_battery_only_pct": -19.359826287683436,
+        "stress_vs_battery_only_pct": -37.57075857046637,
+        "rms_vs_battery_only_pct": -17.94588421021277
+      },
+      "mpc_oracle": {
+        "energyTotalKwh": 3.3930755503837937,
+        "batteryLossKwh": 0.04473710218575713,
+        "scLossKwh": 0.005299550800732305,
+        "converterLossKwh": 0.06319484441693644,
+        "peakCRate": 1.4078233232025128,
+        "rmsCurrentA": 27.298431591143128,
+        "ahThroughput": 9.229795040003623,
+        "dodStress": 97.9544523240117,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 1.303469734313456,
+        "energy_vs_rule_based_pct": -0.49880104516561996,
+        "peak_c_vs_battery_only_pct": -34.60799903579764,
+        "stress_vs_battery_only_pct": -40.20904217144101,
+        "rms_vs_battery_only_pct": -19.811148882306217
+      },
+      "mpc_forecast": {
+        "energyTotalKwh": 3.39271599546834,
+        "batteryLossKwh": 0.045251840857632106,
+        "scLossKwh": 0.005034667115692565,
+        "converterLossKwh": 0.06258543451464865,
+        "peakCRate": 1.4868068954458342,
+        "rmsCurrentA": 27.455028350895066,
+        "ahThroughput": 9.296375140342011,
+        "dodStress": 99.3211807915381,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 1.2927348833045027,
+        "energy_vs_rule_based_pct": -0.5093449144802031,
+        "peak_c_vs_battery_only_pct": -30.939290223286765,
+        "stress_vs_battery_only_pct": -39.374797252234515,
+        "rms_vs_battery_only_pct": -19.35114757375721
+      },
+      "distilled_ml": {
+        "energyTotalKwh": 3.3928599707737632,
+        "batteryLossKwh": 0.045376059427989814,
+        "scLossKwh": 0.00502933287990416,
+        "converterLossKwh": 0.06261052548550182,
+        "peakCRate": 1.5405072587190383,
+        "rmsCurrentA": 27.49268524027975,
+        "ahThroughput": 9.317758532214691,
+        "dodStress": 99.75198223678973,
+        "constraintViolations": 0,
+        "energy_vs_battery_only_pct": 1.297033401795722,
+        "energy_vs_rule_based_pct": -0.505122870114616,
+        "peak_c_vs_battery_only_pct": -28.44496146124348,
+        "stress_vs_battery_only_pct": -39.11183798459121,
+        "rms_vs_battery_only_pct": -19.240530863550187
+      }
+    }
+  }
+}

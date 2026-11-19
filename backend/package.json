@@ -1,0 +1,16 @@
+{
+  "name": "voltsplit-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:migrate": "node --env-file=.env scripts/migrate.mjs",
+    "db:check": "node --env-file=.env scripts/check.mjs",
+    "db:test": "node --env-file=.env scripts/test-rls.mjs",
+    "db:seed:gen": "npx tsx@4.19.2 scripts/gen-seed.ts",
+    "db:status": "node --env-file=.env scripts/status.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
+    "pg": "8.13.1"
+  }
+}

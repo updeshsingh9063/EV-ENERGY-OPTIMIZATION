@@ -1,0 +1,29 @@
+{
+  "vehicle": {
+    "massKg": 2600,
+    "dragCoeff": 0.36,
+    "frontalAreaM2": 3.8,
+    "rollingCoeff": 0.011,
+    "drivetrainEff": 0.88,
+    "regenEff": 0.6,
+    "auxPowerW": 900
+  },
+  "battery": {
+    "seriesCells": 108,
+    "capacityAh": 100,
+    "cellOcvMin": 3.3,
+    "cellOcvMax": 4.15,
+    "packResistanceOhm": 0.09,
+    "socMin": 0.1,
+    "socMax": 0.95,
+    "maxCurrentA": 500
+  },
+  "supercap": {
+    "capacitanceF": 31.25,
+    "vMax": 432,
+    "vMinRatio": 0.5,
+    "esrOhm": 0.035,
+    "maxCurrentA": 500,
+    "converterEff": 0.95
+  }
+}

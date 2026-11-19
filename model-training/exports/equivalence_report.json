@@ -1,0 +1,13 @@
+{
+  "version": "v1.0.0",
+  "compiler": "zig cc (clang) -O2, C99",
+  "steps_compared": 2402,
+  "max_abs_diff_kw": 3.7209857619018296e-06,
+  "mean_abs_diff_kw": 1.0949379304177732e-07,
+  "share_within_0p01_kw": 1.0,
+  "fallback_activations": 0,
+  "us_per_inference": 0.86,
+  "object_size_kb_Os": 661.5,
+  "passed": true,
+  "table_export_max_err_kw": 7.105427357601002e-15
+}
